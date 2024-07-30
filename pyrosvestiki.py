@@ -1,10 +1,17 @@
 import pandas as pd
 import os
+import tabula
 class DeltiaFire:
 
     # orizontai to onoma twn dataframes
-    def __init__(self, DataFrames):
-        self.dfs = DataFrames
+    def __init__(self, pdf_path_folder):
+        self.dfs = self.get_tables_from_pdf(pdf_path_folder)
+
+
+    def get_tables_from_pdf(self, pdf_path):
+        # get tables from pdf with tabula OCR
+        return tabula.read_pdf(pdf_path, pages='all', multiple_tables=True)
+
 
     def sum_numbers(self, cell):
         if isinstance(cell, float) or isinstance(cell, int):  # If the cell is already a number, return it
@@ -55,7 +62,6 @@ class DeltiaFire:
                 table.at[i - 1, 'ΔΗΜΟΣ/ΚΟΙΝΟΤΗΤΑ'] = f"{table.at[i - 1, 'ΔΗΜΟΣ/ΚΟΙΝΟΤΗΤΑ']} {table.at[i, 'ΔΗΜΟΣ/ΚΟΙΝΟΤΗΤΑ']}"
                 if pd.isna(table.at[i, 'ΩΡΑ ΕΝΑΡΞΗΣ']):
                     table.at[i + 2, 'ΩΡΑ ΕΝΑΡΞΗΣ'] = table.at[i + 1, 'ΩΡΑ ΕΝΑΡΞΗΣ']
-
         return table
 
     def check_for_nans(self, table):
@@ -160,7 +166,7 @@ class DeltiaFire:
             df.to_excel(database_path, header=True, index=False)
         else:
             # enimerooume to uparxwn excel arxeio an uparxei
-            print('Enimerosi Excel...(old entrys)')
+            print('Updating Excel...(old entrys)')
             df_existing = pd.read_excel(database_path, header=0)
             self.update_old(df, df_existing, database_path)
         return 0
