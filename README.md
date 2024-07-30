@@ -19,7 +19,8 @@ Make use of class DeltiaFire from pyrosvestiki.py<br />
 First we have to get tables from PDF document with tabula(see main scripts)<br />
 ```tables = extract_tables_from_pdf(pdf_path)```<br /><br />
 Then define an DeltiaFire Object and give the tables we have extracted<br />
-```deltio = DeltiaFire(tables)```<br /><br />
+```deltio = DeltiaFire(os.path.join(pdf_path_folder, file))``` for multiple PDF<br />
+```deltio = DeltiaFire(pdf_path)``` for single PDF<br /><br />
 We run .get() function from DeltiaFire to fix the table<br />
 ```tables = deltio.get()```<br /><br />
 Now we can save the table extracted from the PDF to a excel file alone<br />
