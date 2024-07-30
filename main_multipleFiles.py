@@ -6,14 +6,6 @@ from pyrosvestiki import DeltiaFire
 # To A/A einai me ellinika grammata
 
 
-def save_tables_to_excel(tables, excel_path):
-    merged_tables = pd.concat(tables, ignore_index=True)
-    with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
-        merged_tables.to_excel(writer, index=False)
-    return 0
-
-
-
 def main():
     pdf_path_folder = './pdf_Data/'
     database_path = './Deltia_Database.xlsx'
