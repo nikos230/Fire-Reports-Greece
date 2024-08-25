@@ -4,7 +4,7 @@ Get Excel Table data from PDF reports from Greece Fire Department
 # Features
 * Generate Excel File from PDF document
 * Generate and Update Excel 'Database', insert new PDF Report and Update old entrys
-
+ 
 # How to Run
 First get pyrosvestiki.py and main_singleFile.py or main_multipleFiles.py to the same folder then create a Folder named 'pdf_Data' which will contain all PDF Documents and a Excel Output older named 'excel_output' which will store all new Excel files created. You can rename the folders from main scripts.<br /><br />
 **1.** Create folder '**pdf_Data**' and put all PDF document you have from Fire Department<br />
