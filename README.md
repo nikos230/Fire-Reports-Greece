@@ -1,35 +1,97 @@
-# Fire Reports Greece
-Get Excel Table data from PDF reports from Greece Fire Department
-
-# Features
-* Generate Excel File from PDF document
-* Generate and Update Excel 'Database', insert new PDF Report and Update old entrys
- 
-# How to Run
-First get pyrosvestiki.py and main_singleFile.py or main_multipleFiles.py to the same folder then create a Folder named 'pdf_Data' which will contain all PDF Documents and a Excel Output older named 'excel_output' which will store all new Excel files created. You can rename the folders from main scripts.<br /><br />
-**1.** Create folder '**pdf_Data**' and put all PDF document you have from Fire Department<br />
-**2.** Create folder '**excel_outpu**t' to store all new excel files<br />
-(Cory folders from repo if you do not want to create them)<br />
-**3.** Run **main_multipleFiles.py** if you want to process all PDF document from pdf_Data folder<br />
-**4.** Alternatively run **main_singleFile.py** and input the PDF document name in the script to process only one PDF document<br />
-
-# How to Use
-Make use of class DeltiaFire from pyrosvestiki.py<br />
-```from pyrosvestiki import DeltiaFire```<br /><br />
-Define an DeltiaFire Object and give the tables we have extracted<br />
-```deltio = DeltiaFire(os.path.join(pdf_path_folder, file))``` for multiple PDF<br />
-```deltio = DeltiaFire(pdf_path)``` for single PDF<br /><br />
-We run .get() function from DeltiaFire to fix the table<br />
-```tables = deltio.get()```<br /><br />
-Now we can save the table extracted from the PDF to a excel file alone<br />
-```deltio.save_to_excel(tables, excel_path)```<br /><br />
-Or we can make a database and save it there and update with every new PDF we process<br />
-```deltio.save_to_database(tables, database_path)```<br />
+# Fire Reports PDFs to Database
 
 
-# Examples
-* **Input Data**, Δελτίο Σοβαρών Δασικών 22-07-2024.pdf 
-![plot](https://github.com/nikos230/Fire-Reports-Greece/blob/main/images/fire_table.png?raw=true)
+## Features
+- Generate Excel from PDF Report
+- Generate Database from PDF Reports
+- Update Database for every new PDF Report (old and new entrys)
 
-* **Output Data**, Δελτίο Σοβαρών Δασικών 22-07-2024.xlsx
-![plot](https://github.com/nikos230/Fire-Reports-Greece/blob/main/images/excel_output.png?raw=true)
+## Requirements
+- Install **requirements.txt** <br />
+- numpy==2.1.0, pandas==2.2.2, PyYAML==6.0.1 <br />
+tabula==1.0.5, tabula_py==2.9.3, Java install locally
+
+
+## How to Use (Directly)
+### Single Fire Report
+**1.** Put PDF path into **burn-scar-mapping/configs/config_SngleFile.yaml** in "Input_PDF_File_PATH" <br />
+**2.** Put  Output path to save Excel File in **burn-scar-mapping/configs/config_SngleFile.yaml** in "Output_Excel_File_PATH" <br />
+**3.** Run **main_singleFile.py** 
+<br /><br />
+
+### Multiple Fire Reports
+**1.** Put all PDF files into a folder and folder's path into **burn-scar-mapping/configs/config_multipleFiles.yaml** in "PDF_Folder_PATH" <br />
+**2.** Put Database Path into **burn-scar-mapping/configs/config_multipleFiles.yaml** in "Database_PATH"<br /> (if you have an old Database you can use it but it has to be generated from this script)<br />
+**3.** Put Excel Output path into **burn-scar-mapping/configs/config_multipleFiles.yaml** in "Excel_Files_Output_PATH" <br />
+**4.** Run **main_multipleFiles.py**
+
+### Output
+#### Single Fire Report
+- Single Excel File with info from the Fire Report
+
+#### Multiple Fire Reports
+- Database containing info from Fire Reports
+- Folder containing unique Excel files from every Fire Report (can be disabled)
+
+## How to Use (Alternative)
+### Single Fire Report
+- Import DeltiaFire<br />
+``
+from source.pyrosvestiki import DeltiaFire
+``<br /><br />
+- Initialize Object with pdf path<br />
+``deltio = DeltiaFire(pdf_path)
+``<br /><br />
+- Save genarated Excel file<br />
+``
+deltio.save_to_excel(excel_path)
+``<br />
+### Multiple Fire Reports
+- Make a for loop to process all PDF in the specified folder
+- Use ``deltio = DeltiaFire(os.path.join(pdf_path_folder, file))`` to process every pdf
+- Use ``deltio.save_to_database`` to genate (if not exists) and update the database for every new pdf file
+- Use ``deltio.save_to_excel(excel_path_outputs)`` to save every pdf into a separate Excel file
+```
+import os
+from source.pyrosvestiki import DeltiaFire
+import yaml
+# To A/A einai me ellinika grammata
+
+
+if __name__ == "__main__":
+    with open('configs/config_multipleFiles.yaml', encoding='utf8') as configFile:
+        config = yaml.load(configFile, yaml.FullLoader)
+
+    pdf_path_folder    = config['PDF_Folder_PATH']
+    database_path      = config['Database_PATH']
+    excel_path_outputs = config['Excel_Files_Output_PATH']
+
+    for file in os.listdir(pdf_path_folder):
+        if file.endswith('.pdf'):
+            print('Processing file:', file)
+            # Orizoume ena oject typou pyrosvestiki kai bazoume mesa ta DataFrames
+            deltio = DeltiaFire(os.path.join(pdf_path_folder, file))
+
+            # enimerosi tou excel me ta proigoumena deltia kai prosthiki twn newn entrys
+            deltio.save_to_database(database_path)
+            
+            # apothikeusi kathe deltiou 3exorista
+            deltio.save_to_excel(excel_path_outputs)
+            print('\n')
+    print('Done!')
+```
+
+## Screenshots
+- PDF Fire Reports Example
+![Alt text](https://github.com/noa-beyond/burn-scar-mapping/blob/nikos/src/deltia_pyrosvstikis/screenshots/fire_pdf.png) <br />
+
+- Excel Output Example
+![Alt text](https://github.com/noa-beyond/burn-scar-mapping/blob/nikos/src/deltia_pyrosvstikis/screenshots/fire_excel.png) <br />
+
+- Genarated Database Table/Columns
+![Alt text](https://github.com/noa-beyond/burn-scar-mapping/blob/nikos/src/deltia_pyrosvstikis/screenshots/fire_database.png) <br />
+
+ - Genarated Database Entrys
+![Alt text](https://github.com/noa-beyond/burn-scar-mapping/blob/nikos/src/deltia_pyrosvstikis/screenshots/fire_database_2.png)
+
+
