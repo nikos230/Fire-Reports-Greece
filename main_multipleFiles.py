@@ -6,7 +6,7 @@ import yaml
 
 
 if __name__ == "__main__":
-    with open('configs/Deltia_pyrosvestikis/config_deltia_multipleFiles.yaml', encoding='utf8') as configFile:
+    with open('configs/config_deltia_multipleFiles.yaml', encoding='utf8') as configFile:
         config = yaml.load(configFile, yaml.FullLoader)
 
     pdf_path_folder    = config['PDF_Folder_PATH']
